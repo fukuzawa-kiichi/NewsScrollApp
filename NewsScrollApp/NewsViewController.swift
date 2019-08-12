@@ -9,12 +9,14 @@
 import UIKit
 import XLPagerTabStrip
 import WebKit
+import NVActivityIndicatorView
+
 
 class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDataSource, UITableViewDelegate, WKNavigationDelegate, XMLParserDelegate{
 
     
     // ロード中のインジケータ
-    var activityIndicator: UIActivityIndicatorView!
+    private var activityIndicator: NVActivityIndicatorView!
     
     // 引っ張って更新
     var refreshControl: UIRefreshControl!
@@ -69,23 +71,22 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         // navigationDelegateとの接続
         webView.navigationDelegate = self
         
-        // activityIndicatorのインスタンス
-        activityIndicator = UIActivityIndicatorView()
-
+        /*     // activityIndicatorのインスタンス
+        activityIndicator = NVActivityIndicatorView()
+*/
         // tableviewのサイズを確定
         tableView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
         
         // activityIndicatorの生成、位置、色
-        activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        activityIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50), type: NVActivityIndicatorType.pacman, color: UIColor.red, padding: 0)
         activityIndicator.center = self.view.center
-        activityIndicator.style = UIActivityIndicatorView.Style.gray
 
         // tableviewをviewに追加
         self.view.addSubview(tableView)
         // refreshControlをテーブルビューにつける
         tableView.addSubview(refreshControl)
         // activityIndecatorをViewにつける
-        self.view.addSubview(activityIndicator)
+        view.addSubview(activityIndicator)
         
 
         // 最初は隠す（tableviewが表示されるのを邪魔しないように）
