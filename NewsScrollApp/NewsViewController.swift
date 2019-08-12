@@ -72,7 +72,7 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         
         // activityIndicatorの生成、位置、色
         activityIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50), type: NVActivityIndicatorType.pacman, color: UIColor.red, padding: 0)
-        activityIndicator.center = self.view.center
+        activityIndicator.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 50)
         
         // grayOutViewの範囲と色
         grayOutView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
