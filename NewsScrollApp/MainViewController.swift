@@ -31,16 +31,13 @@ class MainViewController: ButtonBarPagerTabStripViewController {
 
         // 各ViewControllerにurlとiteminfoの情報を受け渡し
         for i in 0 ..< urlList.count {
-
             // viewcontrollerのインスタンス化
             let VC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "News") as! NewsViewController
-
             // 値の受け渡し
             VC.url = urlList[i]
             VC.itemInfo = iteminfo[i]
             // 配列にappend
             childViewControllers.append(VC)
-
         }
         // VCを返す
         return childViewControllers
