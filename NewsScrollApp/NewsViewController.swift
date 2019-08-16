@@ -19,16 +19,12 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
     private var activityIndicator: NVActivityIndicatorView!
     // ロード中のグレーの画面
     private let grayOutView = UIView()
-    
     // 引っ張って更新
     var refreshControl: UIRefreshControl!
-
     // テーブルビューのインスタンスを取得
     var tableView: UITableView = UITableView()
-
     // XMLParserのインスタンスを取得
     var parser = XMLParser()
-
     // 記事情報の配列の入れ物
     var articles: [Any] = []
     // XMLファイルに解析をかけた情報
@@ -40,44 +36,33 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
     // XMLファイルのリンク情報
     var linkString: String = ""
 
-
     // webview
     @IBOutlet weak var webView: WKWebView!
-
     // toolbar(4つのボタンがはいってる)
     @IBOutlet weak var toolBar: UIToolbar!
-    
     // urlを受け取る
     var url: String = ""
     // itemInfoを受け取る
     var itemInfo: IndicatorInfo = ""
     
-    
-
     override func viewDidLoad() {
         super.viewDidLoad()
         // refreshControlのインスタンス
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
-
         // デリゲートとの接続
         tableView.delegate = self
         tableView.dataSource = self
-
         // navigationDelegateとの接続
         webView.navigationDelegate = self
-        
         // tableviewのサイズを確定
         tableView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
-        
         // activityIndicatorの生成、位置、色
         activityIndicator = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50), type: NVActivityIndicatorType.pacman, color: UIColor.red, padding: 0)
         activityIndicator.center = CGPoint(x: self.view.center.x, y: self.view.center.y - 50)
-        
         // grayOutViewの範囲と色
         grayOutView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
         grayOutView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.4)
-
         // tableviewをviewに追加
         self.view.addSubview(tableView)
         // refreshControlをテーブルビューにつける
@@ -86,20 +71,14 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         view.addSubview(grayOutView)
         // activityIndecatorをViewにつける
         view.addSubview(activityIndicator)
-
+        
         // 最初は隠す（tableviewが表示されるのを邪魔しないように）
         webView.isHidden = true
         toolBar.isHidden = true
         grayOutView.isHidden = true
-        
-
         parseUrl()
     }
     
-    
-    
-    
-
     @objc func refresh() {
         // 2秒後にdelayを呼ぶ
         perform(#selector(delay), with: nil, afterDelay: 2.0)
@@ -110,12 +89,6 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         // refreshControlを終了
         refreshControl.endRefreshing()
     }
-    
-    
-    
-    
-    
-    
 
     // urlを解析する
     func parseUrl() {
@@ -133,7 +106,6 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         tableView.reloadData()
     }
     
-    
     // 解析中に要素の開始タグがあったときに実行されるメソッド
     func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
 
@@ -148,8 +120,6 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         }
     }
 
-    
-    
     // 開始タグと終了タグでくくられたデータがあったときに実行されるメソッド
     func parser(_ parser: XMLParser, foundCharacters string: String) {
 
@@ -160,8 +130,6 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         }
     }
 
-    
-    
     // 終了タグを見つけた時
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         // アイテムという要素の中にあるなら、
@@ -181,45 +149,33 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         }
     }
 
-    
-    
     // セルの高さ
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
     }
 
-    
-    
     // セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // 記事の数だけセルを返す
         return articles.count
     }
 
-    
-    
     // セルの設定
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "Cell")
-
         // セルの色
         cell.backgroundColor = #colorLiteral(red: 0.8321695924, green: 0.985483706, blue: 0.4733308554, alpha: 1)
-
         // 記事テキストサイズとフォント
         cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         cell.textLabel?.text = (articles[indexPath.row] as AnyObject).value(forKey: "title") as? String
         cell.textLabel?.textColor = UIColor.black
-
         // 記事urlのサイズとフォント
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 13)
         cell.detailTextLabel?.text = (articles[indexPath.row] as AnyObject).value(forKey: "link") as? String
         cell.detailTextLabel?.textColor = UIColor.gray
-
         return cell
     }
 
-    
-    
     // セルをタップしたときの処理
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // grayOutViewを表示
@@ -228,8 +184,6 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
         
-        
-        //
         let linkUrl = ((articles[indexPath.row] as AnyObject).value(forKey: "link") as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
         let urlStr = (linkUrl?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed))!
         guard let url = URL(string: urlStr) else {
@@ -240,8 +194,6 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         webView.load(urlRequest as URLRequest)
     }
 
-    
-    
     // ページの読み込み完了時に呼ばれる
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         //tableviewを隠す
@@ -257,33 +209,25 @@ class NewsViewController: UIViewController, IndicatorInfoProvider, UITableViewDa
         grayOutView.isHidden = true
     }
 
-    
-    
     // キャンセル
     @IBAction func cancel(_ sender: Any) {
         tableView.isHidden = false
         toolBar.isHidden = true
         webView.isHidden = true
     }
-
-    
     // 戻る
     @IBAction func backPage(_ sender: Any) {
         webView.goBack()
     }
-    
     // 次へ
     @IBAction func nextPage(_ sender: Any) {
         webView.goForward()
     }
-    
     // リロード
     @IBAction func refreshPage(_ sender: Any) {
         webView.reload()
     }
 
-    
-    
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return itemInfo
     }
